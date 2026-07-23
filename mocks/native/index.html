@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SO: Decision Engine</title>
+<style>
+:root { --lime: #ccff00; --charcoal: #121212; --gray: #2a2a2a; }
+body { background: var(--charcoal); color: var(--lime); font-family: 'Courier New', monospace; margin: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-transform: uppercase; }
+.hero { text-align: center; position: relative; z-index: 2; }
+.logo { font-size: 12rem; font-weight: 900; line-height: 0.8; margin: 0; letter-spacing: -5px; cursor: default; }
+.pitch { font-size: 1rem; margin-bottom: 3rem; opacity: 0.8; }
+.vortex-container { position: relative; width: 300px; height: 300px; display: flex; align-items: center; justify-content: center; }
+#vortex-btn { width: 120px; height: 120px; background: var(--lime); color: var(--charcoal); border: none; border-radius: 50%; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10; transition: transform 0.1s; box-shadow: 0 0 30px var(--lime); }
+#vortex-btn:active { transform: scale(0.9); }
+.suggestion { position: absolute; font-weight: bold; font-size: 1.5rem; opacity: 0; transition: all 0.2s ease-out; pointer-events: none; white-space: nowrap; }
+.spinning { animation: spin 0.4s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg) translateX(100px) rotate(0deg); } to { transform: rotate(360deg) translateX(100px) rotate(-360deg); } }
+.land { animation: land 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; opacity: 1 !important; color: #fff; text-shadow: 0 0 10px var(--lime); }
+@keyframes land { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1.2); opacity: 1; } }
+</style>
+</head>
+<body>
+<div class="hero">
+<h1 class="logo">SO?</h1>
+<p class="pitch">The Social Decision Engine for the Indecisive</p>
+</div>
+<div class="vortex-container" id="vortex">
+<button id="vortex-btn">DECIDE</button>
+</div>
+<script>
+const options = ['Tacos', 'Bowling', 'Dive Bar', 'Museum', 'Karaoke', 'Night Walk', 'Arcade', 'Late Pizza'];
+const btn = document.getElementById('vortex-btn');
+const container = document.getElementById('vortex');
+let isSpinning = false;
+
+btn.onclick = () => {
+  if (isSpinning) return;
+  isSpinning = true;
+  btn.innerText = '...';
+  
+  let count = 0;
+  const max = 20;
+  const interval = setInterval(() => {
+    const el = document.createElement('div');
+    el.className = 'suggestion spinning';
+    el.innerText = options[Math.floor(Math.random() * options.length)];
+    container.appendChild(el);
+    setTimeout(() => el.remove(), 400);
+    
+    count++;
+    if (count >= max) {
+      clearInterval(interval);
+      finalize();
+    }
+  }, 60);
+};
+
+function finalize() {
+  const final = options[Math.floor(Math.random() * options.length)];
+  const el = document.createElement('div');
+  el.className = 'suggestion land';
+  el.innerText = final;
+  container.appendChild(el);
+  btn.innerText = 'AGAIN';
+  isSpinning = false;
+  setTimeout(() => { if(!isSpinning) el.remove(); }, 3000);
+}
+</script>
+</body>
+</html>
